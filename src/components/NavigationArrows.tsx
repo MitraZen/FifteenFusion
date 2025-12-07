@@ -14,11 +14,11 @@ export function NavigationArrows({
   canGoNext,
 }: NavigationArrowsProps) {
   return (
-    <>
+    <div className="flex justify-center gap-4 mb-4 px-4">
       <button
         onClick={onPrevious}
         disabled={!canGoPrevious}
-        className={`fixed left-4 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/40 backdrop-blur-md border-2 border-white/30 text-white transition-all duration-300 ${
+        className={`p-3 md:p-4 rounded-full bg-black/40 backdrop-blur-md border-2 border-white/30 text-white transition-all duration-300 ${
           canGoPrevious
             ? "hover:bg-black/60 hover:scale-110 cursor-pointer"
             : "opacity-30 cursor-not-allowed"
@@ -26,7 +26,7 @@ export function NavigationArrows({
         aria-label="Previous memory"
       >
         <svg
-          className="w-6 h-6 md:w-8 md:h-8"
+          className="w-5 h-5 md:w-6 md:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -43,7 +43,7 @@ export function NavigationArrows({
       <button
         onClick={onNext}
         disabled={!canGoNext}
-        className={`fixed right-4 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full bg-black/40 backdrop-blur-md border-2 border-white/30 text-white transition-all duration-300 ${
+        className={`p-3 md:p-4 rounded-full bg-black/40 backdrop-blur-md border-2 border-white/30 text-white transition-all duration-300 ${
           canGoNext
             ? "hover:bg-black/60 hover:scale-110 cursor-pointer"
             : "opacity-30 cursor-not-allowed"
@@ -51,7 +51,7 @@ export function NavigationArrows({
         aria-label="Next memory"
       >
         <svg
-          className="w-6 h-6 md:w-8 md:h-8"
+          className="w-5 h-5 md:w-6 md:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ export function NavigationArrows({
           />
         </svg>
       </button>
-    </>
+    </div>
   );
 }
 

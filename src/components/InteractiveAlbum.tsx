@@ -136,14 +136,14 @@ export function InteractiveAlbum({ initialMemories }: InteractiveAlbumProps) {
 
   return (
     <div
-      className="relative w-full h-screen overflow-hidden"
+      className="relative w-full min-h-screen"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
       <FloatingHearts />
 
-      <div className="relative w-full h-full">
+      <div className="relative w-full">
         {memories.map((memory, index) => (
           <StoryCard
             key={memory.year}
@@ -153,20 +153,23 @@ export function InteractiveAlbum({ initialMemories }: InteractiveAlbumProps) {
         ))}
       </div>
 
-      <NavigationArrows
-        onPrevious={goToPrevious}
-        onNext={goToNext}
-        canGoPrevious={currentIndex > 0}
-        canGoNext={currentIndex < memories.length - 1}
-      />
-
-      {currentMemory && (
-        <YearTimeline
-          totalYears={memories.length}
-          currentYear={currentMemory.year}
-          onYearClick={goToYear}
+      {/* Fixed Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-30">
+        <NavigationArrows
+          onPrevious={goToPrevious}
+          onNext={goToNext}
+          canGoPrevious={currentIndex > 0}
+          canGoNext={currentIndex < memories.length - 1}
         />
-      )}
+
+        {currentMemory && (
+          <YearTimeline
+            totalYears={memories.length}
+            currentYear={currentMemory.year}
+            onYearClick={goToYear}
+          />
+        )}
+      </div>
     </div>
   );
 }
