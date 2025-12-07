@@ -31,11 +31,22 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
     });
   }
 
+  // Debug: Log when component renders
+  if (isActive) {
+    console.log(`StoryCard rendering for Year ${memory.year}`, {
+      isActive,
+      photosCount: photos.length,
+      displayPhotosCount: displayPhotos.length,
+      firstPhoto: displayPhotos[0]
+    });
+  }
+
   return (
     <div
       className={`absolute inset-0 transition-opacity duration-700 overflow-y-auto ${
         isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
       }`}
+      style={{ display: isActive ? 'block' : 'none' }}
     >
       <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-rose-500">
         {/* Header Section */}
