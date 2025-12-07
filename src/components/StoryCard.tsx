@@ -21,9 +21,14 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
   const displayPhotos = photos.slice(0, 12);
   const remainingCount = photos.length - 12;
 
-  // Debug: Log if no photos
-  if (photos.length === 0 && isActive) {
-    console.warn(`No photos found for Year ${memory.year}`, memory);
+  // Debug: Log photo info when active
+  if (isActive) {
+    console.log(`StoryCard for Year ${memory.year}:`, {
+      photosCount: photos.length,
+      displayPhotosCount: displayPhotos.length,
+      photos: photos,
+      memory: memory
+    });
   }
 
   return (

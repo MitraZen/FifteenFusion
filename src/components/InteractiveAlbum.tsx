@@ -43,19 +43,25 @@ export function InteractiveAlbum({ initialMemories }: InteractiveAlbumProps) {
           const actualYear = getActualYear(base.year);
           const photos = allPhotos[base.year] || [];
           
+          console.log(`Year ${base.year}: Found ${photos.length} photos`, photos);
+          
           // Always ensure we have at least the fallback imageUrl
           const finalPhotos = photos.length > 0 ? photos : (base.imageUrl ? [base.imageUrl] : []);
           
-          return {
+          const memory: Memory = {
             ...base,
             photos: finalPhotos,
             actualYear,
             // Use first photo as main image if available
             imageUrl: finalPhotos.length > 0 ? finalPhotos[0] : base.imageUrl,
           };
+          
+          console.log(`Created memory for year ${base.year}:`, memory);
+          return memory;
         });
 
         console.log("Loaded memories:", loadedMemories);
+        console.log("Total memories:", loadedMemories.length);
         setMemories(loadedMemories);
         setLoading(false);
       } catch (error) {
