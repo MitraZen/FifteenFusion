@@ -100,24 +100,24 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
                     className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 bg-gray-800"
                     onClick={() => setSelectedPhoto(photoPath)}
                   >
-                    <Image
+                    <img
                       src={photoPath}
                       alt={`${memory.year} - Photo ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      unoptimized={photoPath.includes('+') || photoPath.includes('=')}
+                      className="w-full h-full object-cover"
                       onError={(e) => {
                         console.error(`Failed to load image: ${photoPath}`, e);
-                        // Show error indicator
                         const target = e.target as HTMLImageElement;
                         if (target?.parentElement) {
+                          target.style.display = 'none';
                           target.parentElement.innerHTML = `
-                            <div class="flex items-center justify-center h-full text-white/50 text-xs p-2 text-center">
-                              Image not found
+                            <div class="flex items-center justify-center h-full text-white/50 text-xs p-2 text-center bg-gray-800 rounded-lg">
+                              Image not found<br/>${photoPath.split('/').pop()}
                             </div>
                           `;
                         }
+                      }}
+                      onLoad={() => {
+                        console.log(`Successfully loaded: ${photoPath}`);
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -148,12 +148,13 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
             onClick={() => setSelectedPhoto(null)}
           >
             <div className="relative max-w-5xl max-h-[90vh] w-full h-full">
-              <Image
+              <img
                 src={selectedPhoto}
                 alt="Full size photo"
-                fill
-                className="object-contain"
-                sizes="100vw"
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  console.error(`Failed to load full size image: ${selectedPhoto}`, e);
+                }}
               />
               <button
                 onClick={() => setSelectedPhoto(null)}
