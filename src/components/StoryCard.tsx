@@ -1,7 +1,6 @@
 "use client";
 
 import { Memory } from "@/types/memory";
-import Image from "next/image";
 import { useState } from "react";
 
 interface StoryCardProps {
