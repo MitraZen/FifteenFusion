@@ -11,11 +11,20 @@ interface StoryCardProps {
 
 export function StoryCard({ memory, isActive }: StoryCardProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const photos = memory.photos.length > 0 ? memory.photos : [memory.imageUrl];
+  
+  // Ensure we always have at least one photo to display
+  const photos = memory.photos && memory.photos.length > 0 
+    ? memory.photos 
+    : (memory.imageUrl ? [memory.imageUrl] : []);
 
   // Create a collage layout - show up to 12 photos in a grid
   const displayPhotos = photos.slice(0, 12);
   const remainingCount = photos.length - 12;
+
+  // Debug: Log if no photos
+  if (photos.length === 0 && isActive) {
+    console.warn(`No photos found for Year ${memory.year}`, memory);
+  }
 
   return (
     <div
@@ -53,8 +62,14 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
 
         {/* Photo Collage Grid */}
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-            {displayPhotos.map((photo, index) => (
+          {displayPhotos.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-white/70 text-lg mb-4">No photos found for this year</div>
+              <div className="text-white/50 text-sm">Photos will appear here once added to the year folder</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+              {displayPhotos.map((photo, index) => (
               <div
                 key={index}
                 className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:z-10"
@@ -66,24 +81,28 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  onError={(e) => {
+                    console.error(`Failed to load image: ${photo}`, e);
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-2 left-2 right-2 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   Photo {index + 1}
                 </div>
               </div>
-            ))}
-            
-            {/* Show remaining count if more than 12 photos */}
-            {remainingCount > 0 && (
-              <div className="relative aspect-square rounded-lg overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center cursor-pointer hover:bg-black/60 transition-all duration-300">
-                <div className="text-center text-white">
-                  <div className="text-3xl md:text-4xl font-bold mb-1">+{remainingCount}</div>
-                  <div className="text-xs md:text-sm">more photos</div>
+              ))}
+              
+              {/* Show remaining count if more than 12 photos */}
+              {remainingCount > 0 && (
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-black/40 backdrop-blur-sm border-2 border-white/30 flex items-center justify-center cursor-pointer hover:bg-black/60 transition-all duration-300">
+                  <div className="text-center text-white">
+                    <div className="text-3xl md:text-4xl font-bold mb-1">+{remainingCount}</div>
+                    <div className="text-xs md:text-sm">more photos</div>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Full Photo Modal */}

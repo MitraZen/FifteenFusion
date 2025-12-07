@@ -32,31 +32,41 @@ export function InteractiveAlbum({ initialMemories }: InteractiveAlbumProps) {
     async function loadAllPhotos() {
       try {
         const response = await fetch("/api/photos");
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`);
+        }
         const allPhotos: Record<number, string[]> = await response.json();
+        
+        console.log("Loaded photos from API:", allPhotos);
 
         const loadedMemories: Memory[] = baseMemories.map((base) => {
           const actualYear = getActualYear(base.year);
           const photos = allPhotos[base.year] || [];
           
+          // Always ensure we have at least the fallback imageUrl
+          const finalPhotos = photos.length > 0 ? photos : (base.imageUrl ? [base.imageUrl] : []);
+          
           return {
             ...base,
-            photos: photos.length > 0 ? photos : [base.imageUrl],
+            photos: finalPhotos,
             actualYear,
             // Use first photo as main image if available
-            imageUrl: photos.length > 0 ? photos[0] : base.imageUrl,
+            imageUrl: finalPhotos.length > 0 ? finalPhotos[0] : base.imageUrl,
           };
         });
 
+        console.log("Loaded memories:", loadedMemories);
         setMemories(loadedMemories);
         setLoading(false);
       } catch (error) {
         console.error("Error loading photos:", error);
-        // Fallback to base memories
+        // Fallback to base memories with imageUrl as photos
         const fallbackMemories: Memory[] = baseMemories.map((base) => ({
           ...base,
-          photos: [base.imageUrl],
+          photos: base.imageUrl ? [base.imageUrl] : [],
           actualYear: getActualYear(base.year),
         }));
+        console.log("Using fallback memories:", fallbackMemories);
         setMemories(fallbackMemories);
         setLoading(false);
       }
