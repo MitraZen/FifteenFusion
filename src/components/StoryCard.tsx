@@ -65,32 +65,51 @@ export function StoryCard({ memory, isActive }: StoryCardProps) {
           {displayPhotos.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-white/70 text-lg mb-4">No photos found for this year</div>
-              <div className="text-white/50 text-sm">Photos will appear here once added to the year folder</div>
+              <div className="text-white/50 text-sm mb-2">Photos will appear here once added to the year folder</div>
+              <div className="text-white/40 text-xs">Debug: photos array length = {photos.length}, imageUrl = {memory.imageUrl}</div>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {displayPhotos.map((photo, index) => (
-              <div
-                key={index}
-                className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:z-10"
-                onClick={() => setSelectedPhoto(photo)}
-              >
-                <Image
-                  src={photo}
-                  alt={`${memory.year} - Photo ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  onError={(e) => {
-                    console.error(`Failed to load image: ${photo}`, e);
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-2 left-2 right-2 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  Photo {index + 1}
-                </div>
-              </div>
-              ))}
+              {displayPhotos.map((photo, index) => {
+                // Ensure photo path is valid
+                const photoPath = photo || memory.imageUrl;
+                if (!photoPath) {
+                  console.warn(`No photo path for index ${index} in year ${memory.year}`);
+                  return null;
+                }
+                
+                return (
+                  <div
+                    key={`${photoPath}-${index}`}
+                    className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:z-10 bg-gray-800"
+                    onClick={() => setSelectedPhoto(photoPath)}
+                  >
+                    <Image
+                      src={photoPath}
+                      alt={`${memory.year} - Photo ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      onError={(e) => {
+                        console.error(`Failed to load image: ${photoPath}`, e);
+                        // Show error indicator
+                        const target = e.target as HTMLImageElement;
+                        if (target?.parentElement) {
+                          target.parentElement.innerHTML = `
+                            <div class="flex items-center justify-center h-full text-white/50 text-xs p-2 text-center">
+                              Image not found
+                            </div>
+                          `;
+                        }
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-2 left-2 right-2 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Photo {index + 1}
+                    </div>
+                  </div>
+                );
+              })}
               
               {/* Show remaining count if more than 12 photos */}
               {remainingCount > 0 && (
