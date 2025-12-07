@@ -21,6 +21,7 @@ const nextConfig = {
         hostname: "**.cloudinary.com",
       },
     ],
+    unoptimized: false, // Keep optimization enabled
   },
   experimental: {
     staleTimes: {

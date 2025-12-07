@@ -31,8 +31,9 @@ export async function GET(request: Request) {
               return ext.endsWith(".jpg") || ext.endsWith(".jpeg") || ext.endsWith(".png") || ext.endsWith(".JPG") || ext.endsWith(".JPEG") || ext.endsWith(".PNG");
             })
             .map((file) => {
-              // Use filename as-is, Next.js will handle encoding
-              return `/photos/${actualYear}/${file}`;
+              // URL encode the filename to handle special characters
+              const encodedFile = encodeURIComponent(file);
+              return `/photos/${actualYear}/${encodedFile}`;
             });
           
           if (imageFiles.length > 0) {
@@ -60,8 +61,9 @@ export async function GET(request: Request) {
           return ext.endsWith(".jpg") || ext.endsWith(".jpeg") || ext.endsWith(".png") || ext.endsWith(".JPG") || ext.endsWith(".JPEG") || ext.endsWith(".PNG");
         })
         .map((file) => {
-          // Use filename as-is, Next.js will handle encoding
-          return `/photos/${actualYear}/${file}`;
+          // URL encode the filename to handle special characters
+          const encodedFile = encodeURIComponent(file);
+          return `/photos/${actualYear}/${encodedFile}`;
         });
 
       return NextResponse.json({ photos: imageFiles, year: anniversaryYear, actualYear });
