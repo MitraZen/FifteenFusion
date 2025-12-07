@@ -31,9 +31,9 @@ export async function GET(request: Request) {
               return ext.endsWith(".jpg") || ext.endsWith(".jpeg") || ext.endsWith(".png") || ext.endsWith(".JPG") || ext.endsWith(".JPEG") || ext.endsWith(".PNG");
             })
             .map((file) => {
-              // URL encode the filename to handle special characters
-              const encodedFile = encodeURIComponent(file);
-              return `/photos/${actualYear}/${encodedFile}`;
+              // Return path as-is - Next.js will handle URL encoding when serving
+              // But we need to handle special characters in the path
+              return `/photos/${actualYear}/${file}`;
             });
           
           if (imageFiles.length > 0) {
@@ -61,9 +61,8 @@ export async function GET(request: Request) {
           return ext.endsWith(".jpg") || ext.endsWith(".jpeg") || ext.endsWith(".png") || ext.endsWith(".JPG") || ext.endsWith(".JPEG") || ext.endsWith(".PNG");
         })
         .map((file) => {
-          // URL encode the filename to handle special characters
-          const encodedFile = encodeURIComponent(file);
-          return `/photos/${actualYear}/${encodedFile}`;
+          // Return path as-is - Next.js will handle URL encoding when serving
+          return `/photos/${actualYear}/${file}`;
         });
 
       return NextResponse.json({ photos: imageFiles, year: anniversaryYear, actualYear });
